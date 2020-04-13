@@ -1,0 +1,60 @@
+Train/test/dev 
+	-same distribution
+	-small amount of data --> 60/20/20
+	-large amount of data --> 99/0.6/0.4
+
+High Bias 
+	- Undertraining the training data (high cost on train set)
+		- Bigger network
+		- Train longer
+		- Different network structure
+High Variance
+	-Rule of thumb: First try to get as low Cost on train set as you can by finding the best hyperparameters (learn_rate, nodes, n_layers, structure of network, initalization, cost function, layer activation functions, (L2 lambda), (itterations), ...). Then avoid overfititng by regulazation, more data...
+	-Overfiting the train set (high cost on test set)
+		- More Data
+			- For images --> flip image horizantally --> more data. Get random parts of the image.
+		- Regulazation
+			-L2 Regulazation
+				-Wights -= (dW + Lamdba/m * W)
+				-Reduces complexity when Lambda is a big number
+				-Simplier modell
+			-Drop out
+				-Upon each train you drop out nodes randomly thus network becomes smaller
+				-At train you define a probability (0.8 for example). And based on that pobability you change each node's (A1, A2...) value to 0. --> doA2 (0 if the random value is less than the probability, else 1) * A2. Z3 = W3 @ A2 / drop-out + B3 (dividing in order to ignore the drop out at forward prop)
+				-At test you don't use the drop out method.
+				-Probabilities can differ for each layer. layers with more nodes have lower prob.
+			-Early stoping
+				-Monitor dev cost upon training as well. Once dev cost starts to increase stop iterrating.
+			
+		- Different network structure
+
+-Normalization
+	-Subtract mean (1/m * Sum(X)) from each training set to set the mean to zero
+	-Normalize Variance: Divide each training set by (1/m * sum(x^2) which is now the variance (after already previously subtructing mean))
+	-Use same Mean and Variance to scale test set.
+
+.Vanishing/Exploding gradient descent
+	-When you have a deep network. Big init weights cause the network to explode --> y= w^l where w is greater than 1, small weight cause it to vanish --> y= w^l where w is less that 1.
+	-The more nodes a layer have the smaller the weights should be --> W_l = np.random.rand(l_n, l_n-1) * np.sqrt(1/n_l-1) for Relu better = np.random.rand(l_n, l_n-1) * np.sqrt(2/n_l-1)
+
+-Gradient checking
+	-Only use to debug the program. Two sided gradient check. Gradient = F[x+E] - F[x-E]/2E = dprob
+	-Concatenate Weights and biases to a large vector. Calculate the previous for each element. (E=10^-7) then check ||d0-dprob0|| / (||d0|| + ||dprob0||). If this equals around 10^-7 then the gradient descent alogrithm is ok. bigger than 10^-3 means there is a bug.
+	-Remeber regulazation check as well.
+
+
+Batches - 1 itteration over all mini batch is an epoch
+	-If M is small (<2000) use Batch gradient descand (no mini batches)
+	-If M is greated (>2000) use mini-batch 2^6, 2^7,2^8,2^9...2000
+
+Gradient descent with momentum
+	- using the VdWt = Beta * VdWt-1 + (1-Beta) * dWt foruma
+	
+Use ADam optimiser!!!
+
+Learning rate decay
+	-The more you learn, the smaller the learning_rate is
+	-1/(1+decay-rate*epochs) * learning_rate_0 where decay-rate is a hyper parameter (1 e.g)
+
+Batch normalization
+	-Normalize hidden network activations - go to course
